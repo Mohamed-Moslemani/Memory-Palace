@@ -1,12 +1,10 @@
 from flask import Flask
-from flask_pymongo import PyMongo
-from flask_bcrypt import Bcrypt
 from flask_cors import CORS
-from flask_jwt_extended import JWTManager
+from app.extensions import mongo, bcrypt, jwt
+from app.routes import auth
 
-mongo = PyMongo()
-bcrypt = Bcrypt()
-jwt = JWTManager()
+
+
 
 def create_app():
     app = Flask(__name__)
@@ -15,4 +13,6 @@ def create_app():
     bcrypt.init_app(app)
     jwt.init_app(app)
     CORS(app)
+    app.register_blueprint(auth, url_prefix="/api",name='authroute')
+
     return app
