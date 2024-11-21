@@ -1,8 +1,10 @@
 from cryptography.fernet import Fernet
 import bcrypt
+import os 
+from dotenv import load_dotenv
+load_dotenv()
 
-# Generate and store this key securely for production
-AES_SECRET_KEY = Fernet.generate_key()
+AES_SECRET_KEY = os.getenv("AES_SECRET_KEY").encode('utf-8')
 cipher = Fernet(AES_SECRET_KEY)
 
 # Hashing Functions
