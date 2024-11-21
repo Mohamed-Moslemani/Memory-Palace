@@ -6,6 +6,11 @@ from datetime import datetime
 from bson import ObjectId  
 from datetime import datetime
 from app.models import create_user_document
+import openai
+import os 
+from dotenv import load_dotenv
+load_dotenv()
+
 
 auth = Blueprint("auth", __name__)
 
@@ -79,7 +84,7 @@ def save_password():
         return jsonify({"error": "Unauthorized"}), 401
 
     data = request.json
-    service = data.get("service")  # Example: "GitHub"
+    service = data.get("service") 
     password = data.get("password")
 
     if not service or not password:
@@ -105,7 +110,7 @@ def save_password():
 def retrieve_password():
     user_id = get_jwt_identity()  # Get the authenticated user's ID
     data = request.json
-    service = data.get("service")  # Example: "GitHub"
+    service = data.get("service")  
 
     if not service:
         return jsonify({"error": "Service name is required"}), 400
@@ -123,3 +128,119 @@ def retrieve_password():
         "service": service,
         "password": decrypted_password
     }), 200
+
+@auth.route("/save-idea", methods=["POST"])
+@jwt_required()
+def save_idea():
+    user_id = get_jwt_identity()
+    data = request.json
+    idea = data.get("idea")
+
+    if not idea:
+        return jsonify({"error": "Idea content is required"}), 400
+
+    # Create idea document
+    idea_document = {
+        "user_id": user_id,
+        "idea": idea,
+        "created_at": datetime.utcnow(),
+    }
+
+    # Save idea in the database
+    mongo.db.ideas.insert_one(idea_document)
+    return jsonify({"message": "Idea saved successfully"}), 201
+
+@auth.route("/retrieve-ideas", methods=["GET"])
+@jwt_required()
+def retrieve_ideas():
+    user_id = get_jwt_identity()
+
+    # Query the database for all ideas by this user
+    ideas = mongo.db.ideas.find({"user_id": user_id})
+
+    # Transform cursor to list of ideas
+    idea_list = [{"idea": idea["idea"], "created_at": idea["created_at"]} for idea in ideas]
+
+    if not idea_list:
+        return jsonify({"message": "No ideas found"}), 404
+
+    return jsonify({"ideas": idea_list}), 200
+
+@auth.route("/search-ideas", methods=["POST"])
+@jwt_required()
+def search_ideas():
+    user_id = get_jwt_identity()
+    data = request.json
+    query = data.get("query")  
+    retrieve_all = data.get("retrieve_all", False) 
+
+    # Retrieve all ideas if requested
+    if retrieve_all:
+        ideas = mongo.db.ideas.find({"user_id": user_id})
+    else:
+        # Search ideas containing the query string (case-insensitive)
+        ideas = mongo.db.ideas.find({"user_id": user_id, "idea": {"$regex": query, "$options": "i"}})
+
+    # Transform cursor to list of ideas
+    idea_list = [{"idea": idea["idea"], "created_at": idea["created_at"]} for idea in ideas]
+
+    if not idea_list:
+        return jsonify({"message": "No matching ideas found"}), 404
+
+    return jsonify({"ideas": idea_list}), 200
+
+@auth.route("/fetch-all-ideas", methods=["GET"])
+@jwt_required()
+def fetch_all_ideas():
+    user_id = get_jwt_identity()
+
+    # Fetch all ideas for the user
+    ideas = mongo.db.ideas.find({"user_id": user_id})
+    idea_list = [{"idea": idea["idea"], "created_at": idea["created_at"]} for idea in ideas]
+
+    if not idea_list:
+        return jsonify({"message": "No ideas found"}), 404
+
+    return jsonify({"ideas": idea_list}), 200
+
+@auth.route("/llm-query-ideas", methods=["POST"])
+@jwt_required()
+def llm_query_ideas():
+    user_id = get_jwt_identity()
+    data = request.json
+    user_query = data.get("query")
+
+    # Fetch all ideas from the database
+    ideas = mongo.db.ideas.find({"user_id": user_id})
+    idea_list = [{"idea": idea["idea"], "created_at": str(idea["created_at"])} for idea in ideas]
+
+    if not idea_list:
+        return jsonify({"message": "No ideas found"}), 404
+
+    OPENAI_API_KEY = os.getenv(OPENAI_API_KEY)
+
+    llm_prompt = f"""
+    User Query: "{user_query}"
+
+    Here is a list of the user's saved ideas:
+    {idea_list}
+
+    Task: Scan through the ideas and determine the one most relevant to the user's query.
+    If the user explicitly asks for all ideas, return all of them.
+    Format the response as JSON:
+    {{
+        "response": "Your relevant idea or all ideas",
+        "context": "Explanation of the match"
+    }}
+    """
+
+    response = openai.Completion.create(
+        model="gpt-4",
+        prompt=llm_prompt,
+        max_tokens=300
+    )
+
+    llm_response = response["choices"][0]["text"].strip()
+
+    # Parse and return the LLM's response
+    return jsonify({"response": llm_response}), 200
