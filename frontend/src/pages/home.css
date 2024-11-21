@@ -1,0 +1,94 @@
+/* Define CSS variables for easy customization */
+:root {
+    --primary-color: #393E46;
+    --secondary-color: #929AAB;
+    --accent-color: #4E9F3D;
+    --button-color: #1E5128;
+    --text-color: #393E46;
+    --background-color: #F7F7F7;
+}
+
+/* Global styles */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+/* Home section */
+.home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(to bottom right, var(--primary-color), var(--secondary-color));
+    padding: 2rem;
+}
+
+/* Content container */
+.home-content {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 100%;
+    text-align: center;
+}
+
+/* Heading style */
+h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    color: var(--accent-color);
+}
+
+/* Paragraph style */
+p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+}
+
+/* Call-to-action button */
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    color: #fff;
+    background-color: var(--button-color);
+    text-decoration: none;
+    border-radius: 50px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.cta-button:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-5px);
+}
+
+/* Responsive typography */
+@media screen and (max-width: 768px) {
+    h1 {
+        font-size: 2.5rem;
+    }
+    p {
+        font-size: 1.1rem;
+    }
+    .home-content {
+        padding: 1.5rem;
+    }
+}
+
+/* Additional enhancements */
+@media screen and (max-width: 480px) {
+    h1 {
+        font-size: 2rem;
+    }
+    .cta-button {
+        padding: 0.8rem 1.5rem;
+        font-size: 1rem;
+    }
+}
