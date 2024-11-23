@@ -1,8 +1,7 @@
 from app import create_app
-from app.routes import auth
+from app.routes.auth_routes import auth_bp
 
 app = create_app()
-app.register_blueprint(auth, url_prefix="/api")
 
 if __name__ == "__main__":
     app.run(debug=True)
