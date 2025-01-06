@@ -7,7 +7,7 @@ const Navbar = () => {
   return (
     <nav className="bg-primary text-secondary px-6 py-4 flex justify-between items-center">
       <Link to="/">
-        <img src={logo} alt="Memory Palace Logo" style={{ height: "100px", width: "150px" }} 
+        <img src={logo} alt="Memory Palace Logo" style={{ height: "80px", width: "80px" }} 
         />
       </Link>
       <ul className="flex gap-6">

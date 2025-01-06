@@ -37,7 +37,7 @@ const Home = () => {
           Your ultimate tool for securely storing and retrieving ideas and passwords. 
           Stay organized, stay secure, and make life effortless.
         </p>
-        <button className="bg-accent text-white px-8 py-4 rounded-lg shadow-lg hover:bg-dark hover:text-secondary transition text-lg">
+        <button className="bg-accent text-white px-8 py-4 rounded-lg opacity-65 shadow-lg hover:bg-dark hover:text-secondary transition text-lg">
           Get Started
         </button>
       </div>

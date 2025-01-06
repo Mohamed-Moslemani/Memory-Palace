@@ -22,6 +22,23 @@ code {
   background-size: 400% 400%;
   animation: gradientBG 15s ease infinite;
 }
+
+/* Floating brain animation */
+@keyframes floatUp {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-120vh); /* Move upwards beyond the top of the viewport */
+    opacity: 0; /* Fade out */
+  }
+}
+
+img[alt="Floating Brain"] {
+  animation: floatUp 30s linear infinite;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

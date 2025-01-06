@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import glassesOn from "../assets/images/glasses_on.svg"; 
 import glassesOff from "../assets/images/glasses_off.svg"; 
+import FloatingBrains from "../components/floatingbrains"; 
 
 const LoginSignup = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -9,6 +10,7 @@ const LoginSignup = () => {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-primary to-secondary text-dark">
+        <FloatingBrains /> 
       <div className="bg-white p-8 rounded-lg shadow-lg w-96">
         <h2 className="text-4xl font-bold mb-6 text-center">
           {isLogin ? "Login" : "Signup"}
