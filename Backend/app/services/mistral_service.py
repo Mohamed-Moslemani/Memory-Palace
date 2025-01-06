@@ -21,7 +21,7 @@ class MistralService:
                     },
                     {
                         "role": "user",
-                        "content": f"Context:\n{formatted_context}\n\nQuestion: {query}"
+                        "content": f"User's info:\n{formatted_context}\n\Query: {query}"
                     }
                 ]
             )

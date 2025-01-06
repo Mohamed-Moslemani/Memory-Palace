@@ -12,7 +12,7 @@ def retrieve_relevant_data(user_id: str, query: str, data_type: str) -> List[Dic
         cursor = mongo.db.ideas.find({
             "user_id": user_id,
             "idea": {"$regex": query, "$options": "i"}
-        })
+        })  
         return list(cursor)
     elif data_type == "password":
         cursor = mongo.db.passwords.find({
@@ -44,49 +44,5 @@ def rag_query():
             "retrieved_data": retrieved_data
         }), 200
 
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-    
-
-@rag_bp.route("/idea", methods=["POST"])
-@jwt_required()
-def add_idea():
-    user_id = get_jwt_identity()
-    data = request.json
-
-    idea = data.get("idea")
-    if not idea:
-        return jsonify({"error": "Idea is required"}), 400
-
-    try:
-        idea_data = {
-            "user_id": user_id,
-            "idea": idea
-        }
-        mongo.db.ideas.insert_one(idea_data)
-        return jsonify({"message": "Idea added successfully", "data": idea_data}), 201
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-
-@rag_bp.route("/password", methods=["POST"])
-@jwt_required()
-def add_password():
-    user_id = get_jwt_identity()
-    data = request.json
-
-    service = data.get("service")
-    password = data.get("password")
-    if not service or not password:
-        return jsonify({"error": "Service and password are required"}), 400
-
-    try:
-        password_data = {
-            "user_id": user_id,
-            "service": service,
-            "password": password
-        }
-        mongo.db.passwords.insert_one(password_data)
-        return jsonify({"message": "Password added successfully", "data": password_data}), 201
     except Exception as e:
         return jsonify({"error": str(e)}), 500
