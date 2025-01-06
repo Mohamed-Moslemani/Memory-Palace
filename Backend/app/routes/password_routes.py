@@ -5,6 +5,7 @@ from app.services.password_service import PasswordService
 password_bp = Blueprint("password", __name__)
 password_service = PasswordService()
 
+
 @password_bp.route("/save", methods=["POST"])
 @jwt_required()
 def save_password():
@@ -24,6 +25,8 @@ def save_password():
         return jsonify({"message": message}), 201
     return jsonify({"error": message}), 400
 
+
+
 @password_bp.route("/retrieve", methods=["POST"])
 @jwt_required()
 def retrieve_password():
@@ -41,6 +44,8 @@ def retrieve_password():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+
 @password_bp.route("/services", methods=["GET"])
 @jwt_required()
 def list_services():
@@ -50,6 +55,8 @@ def list_services():
         return jsonify({"services": services}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
 
 @password_bp.route("/delete", methods=["DELETE"])
 @jwt_required()
@@ -64,6 +71,8 @@ def delete_password():
     if success:
         return jsonify({"message": message}), 200
     return jsonify({"error": message}), 404
+
+
 
 @password_bp.route("/search", methods=["GET"])
 @jwt_required()

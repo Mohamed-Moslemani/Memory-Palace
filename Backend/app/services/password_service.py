@@ -3,6 +3,8 @@ from datetime import datetime
 from bson import ObjectId
 from app.extensions import mongo
 from app.utils.security import PasswordEncryption
+from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 class PasswordService:
     def __init__(self):
@@ -163,9 +165,6 @@ class PasswordService:
             return False, f"Error updating service details: {str(e)}"
 
 # routes/password_routes.py
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.services.password_service import PasswordService
 
 password_bp = Blueprint("password", __name__)
 password_service = PasswordService()
